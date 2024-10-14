@@ -1,5 +1,3 @@
-
-
 <template>
   <main>
     <div class="header">
