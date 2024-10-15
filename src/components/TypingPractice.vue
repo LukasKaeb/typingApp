@@ -61,23 +61,35 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
+import { auth, database } from '/firebaseConfig'
 
 const router = useRouter()
-
 const wpmStore = useWpmStore()
+const userInput = ref('') // User Input
 
 const timerStarted = ref(false)
 const selectedCountdown = ref(0)
 const showResults = ref(true)
 
+// Fetch text
 const targetText = ref('')
-
 const fetchText = async () => {
-  const res = await fetch('https://random-word-api.herokuapp.com/word?number=30')
-  const data = await res.json()
-  targetText.value = data.join(' ')
-}
+  try {
+    const res = await fetch('/words.json')
+    const data = await res.json()
 
+    const randomWords = []
+    for (let i = 0; i < 30; i++) {
+      const randomIndex = Math.floor(Math.random() * data.words.length)
+      randomWords.push(data.words[randomIndex])
+    }
+
+    targetText.value = randomWords.join(' ')
+  } catch (error) {
+    console.error('Error fetching words: ', error)
+  }
+}
+// Compare input
 const isTextCorrect = ref([])
 
 const compareInput = () => {
@@ -95,7 +107,7 @@ const compareInput = () => {
   }
 }
 
-//WPM
+//Calculate WPM and Net WPM
 
 const rawWpm = ref(0)
 const netWpm = ref(0)
@@ -126,9 +138,10 @@ const calculateRawWpm = () => {
   rawWpm.value = Math.round(totalCharsTyped / 5 / (totalTime.value / 60))
 
   wpmStore.setRawWpm(rawWpm.value)
-  console.log('Net WPM: ' + rawWpm.value)
+  // console.log('Net WPM: ' + rawWpm.value)
 }
 
+// Start, Reset and pause countdown
 let interval = null
 
 const pauseCountdown = () => {
@@ -153,6 +166,8 @@ const startCountdown = () => {
         showResults.value = true
         calculateRawWpm()
         calculateNetWpm()
+        // Post results to Firebase
+        // postResults(rawWpm.value, netWpm.value, totalTime.value, 1)
         router.push('/results')
       }
     }, 1000)
@@ -169,8 +184,7 @@ const resetTimer = () => {
   fetchText()
 }
 
-const userInput = ref('')
-
+// Keyboard logic
 const isKeyBoardVisible = ref(true)
 
 const toggleKeyboardVis = () => {

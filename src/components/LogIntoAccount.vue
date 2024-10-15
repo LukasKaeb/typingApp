@@ -25,6 +25,10 @@ const email = ref('')
 const password = ref('')
 
 const login = async () => {
+  if (wpmStore.isLoggedIn) {
+    alert('You are already logged in!')
+  }
+
   const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
   const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + apiKey
 
@@ -38,6 +42,15 @@ const login = async () => {
   })
 
   const responseData = await response.json()
+
+  if (responseData.idToken) {
+    // Save token and user id to local storage for persistence
+    console.log('Logged in!', responseData.idToken)
+    localStorage.setItem('token', responseData.idToken)
+    localStorage.setItem('userId', responseData.localId)
+  } else {
+    throw new Error(responseData.error.message)
+  }
 
   if (response.ok) {
     console.log('Logged in!')

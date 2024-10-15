@@ -8,7 +8,10 @@ export const useWpmStore = defineStore('wpm', {
     userId: null,
     userToken: null,
     isLoggedIn: false,
-    username: null
+    totalTimeSpentTyping: 0,
+    totalWordsTyped: 0,
+    totalTestsTaken: 0
+    // username: null,
   }),
   actions: {
     setRawWpm(value) {
@@ -25,6 +28,34 @@ export const useWpmStore = defineStore('wpm', {
     },
     setIsLoggedIn(value) {
       this.isLoggedIn = value
+    },
+    setTotalTimeSpentTyping(value) {
+      this.totalTimeSpentTyping = value
+    },
+    setTotalWordsTyped(value) {
+      this.totalWordsTyped = value
+    },
+    setTotalTestsTaken(value) {
+      this.totalTestsTaken = value
+    },
+    // Check if user is logged in
+    checkAuth() {
+      const userId = localStorage.getItem('userId')
+      if (userId) {
+        console.log('User is logged in')
+        this.setIsLoggedIn(true)
+        this.setUserId(userId)
+        // fetch data from backend...
+      } else {
+        console.log('User is not logged in')
+        this.setIsLoggedIn(false)
+        this.setUserId(null)
+      }
+    },
+    logout() {
+      localStorage.removeItem('userId')
+      this.setIsLoggedIn(false)
+      this.setUserId(null)
     }
     // setUsername(value) {
     //   this.username = value

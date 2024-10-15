@@ -13,15 +13,24 @@
       <li>
         <router-link to="/register"><i class="material-icons">person</i></router-link>
       </li>
+      <li v-if="wpmStore.isLoggedIn"><button @click="logout('/')">Logout</button></li>
     </ul>
   </nav>
 </template>
   
-  <script setup>
-// No additional setup needed
+<script setup>
+import { useRouter } from 'vue-router'
+import { useWpmStore } from '@/stores/store'
+const router = useRouter()
+const wpmStore = useWpmStore()
+
+const logout = (route) => {
+  wpmStore.logout()
+  router.push(route)
+}
 </script>
   
-  <style scoped>
+<style scoped>
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -78,6 +87,15 @@
 /* Push content below the navbar */
 body {
   padding-top: 60px; /* Add padding to avoid content overlap */
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
   

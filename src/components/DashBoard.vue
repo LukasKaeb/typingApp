@@ -2,7 +2,8 @@
   <main>
     <h1>Dashboard</h1>
     <div class="border">
-      <h1>{{ wpmStore.userName }}</h1>
+      <h2>WPM: {{ wpmStore.wpm }}</h2>
+      <p>User ID: {{ wpmStore.userId }}</p>
     </div>
   </main>
 </template>
