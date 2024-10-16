@@ -1,7 +1,7 @@
 <template>
   <main>
     <h1>Login</h1>
-    <form class="form" @submit.prevent="login">
+    <form class="form" @submit.prevent="login(email, password, '/dashboard')">
       <label for="email">Email</label>
       <input type="text" name="email" id="email" v-model="email" />
       <label for="password">Password</label>
@@ -14,53 +14,19 @@
   
   <script setup>
 import { ref } from 'vue'
-import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
-
+import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 
-const wpmStore = useWpmStore()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
 
-const login = async () => {
-  if (wpmStore.isLoggedIn) {
-    alert('You are already logged in!')
-  }
-
-  const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
-  const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + apiKey
-
-  const response = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      email: email.value,
-      password: password.value,
-      returnSecureToken: true
-    })
-  })
-
-  const responseData = await response.json()
-
-  if (responseData.idToken) {
-    // Save token and user id to local storage for persistence
-    console.log('Logged in!', responseData.idToken)
-    localStorage.setItem('token', responseData.idToken)
-    localStorage.setItem('userId', responseData.localId)
-  } else {
-    throw new Error(responseData.error.message)
-  }
-
-  if (response.ok) {
-    console.log('Logged in!')
-    wpmStore.setIsLoggedIn(true)
-    wpmStore.setToken(responseData.idToken)
-    wpmStore.setUserId(responseData.localId)
-    router.push('/dashboard')
-  } else {
-    alert(responseData.error.message)
-  }
+const login = (email, password, route) => {
+  console.log(email, password)
+  authStore.loginUser(email, password)
+  router.push(route)
 }
 </script>
   

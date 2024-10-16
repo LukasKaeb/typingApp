@@ -3,13 +3,16 @@
     <h1>Dashboard</h1>
     <div class="border">
       <h2>WPM: {{ wpmStore.wpm }}</h2>
-      <p>User ID: {{ wpmStore.userId }}</p>
+      <p>User ID: {{ authStore.userId }}</p>
     </div>
   </main>
 </template>
 
 <script setup>
 import { useWpmStore } from '@/stores/store'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 const wpmStore = useWpmStore()
 </script>

@@ -6,14 +6,14 @@
 <script setup>
 import NavBar from '@/components/NavBar.vue'
 import { useRouter } from 'vue-router'
-import { useWpmStore } from './stores/store'
+import { useAuthStore } from './stores/auth'
 import { onMounted } from 'vue'
 
 const router = useRouter()
-const wpmStore = useWpmStore()
+const authStore = useAuthStore()
 
 onMounted(() => {
-  wpmStore.checkAuth()
+  authStore.checkAuth()
 })
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <main>
     <h1>Create Account</h1>
-    <form class="form" @submit.prevent="signup">
+    <form class="form" @submit.prevent="createAccount(email, password, '/dashboard')">
       <label for="email">Username</label>
       <input type="text" name="username" id="username" v-model="username" />
       <label for="email">Email</label>
@@ -16,42 +16,20 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
-
-const wpmStore = useWpmStore()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
 const username = ref('')
 
-const signup = async () => {
-  const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
-  let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + apiKey
-
-  const response = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      email: email.value,
-      password: password.value,
-      returnSecureToken: true
-    })
-  })
-
-  const responseData = await response.json()
-  console.log(responseData)
-  console.log(responseData.username)
-
-  if (response.ok) {
-    wpmStore.setIsLoggedIn(true)
-    wpmStore.setToken(responseData.idToken)
-    wpmStore.setUserId(responseData.localId)
-    router.push('/dashboard')
-  } else {
-    alert(responseData.error.message)
-  }
+const createAccount = (email, password, route) => {
+  console.log(email, password)
+  authStore.createAccount(email, password)
+  router.push(route)
 }
 </script>
 

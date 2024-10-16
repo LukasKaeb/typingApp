@@ -7,25 +7,25 @@
     <ul class="navbar-links">
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/practice">Practice</router-link></li>
-      <li>
+      <li v-if="authStore.isLoggedIn">
         <router-link to="/dashboard"><i class="material-icons">dashboard</i></router-link>
       </li>
-      <li>
+      <li v-if="!authStore.isLoggedIn">
         <router-link to="/register"><i class="material-icons">person</i></router-link>
       </li>
-      <li v-if="wpmStore.isLoggedIn"><button @click="logout('/')">Logout</button></li>
+      <li v-if="authStore.isLoggedIn"><button @click="logout('/')">Logout</button></li>
     </ul>
   </nav>
 </template>
   
 <script setup>
 import { useRouter } from 'vue-router'
-import { useWpmStore } from '@/stores/store'
+import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
-const wpmStore = useWpmStore()
+const authStore = useAuthStore()
 
 const logout = (route) => {
-  wpmStore.logout()
+  authStore.logout()
   router.push(route)
 }
 </script>
