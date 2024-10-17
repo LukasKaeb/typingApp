@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', {
       } else {
         alert(responseData.error.message)
       }
-    },
+    }, 
     checkAuth() {
       const userId = localStorage.getItem('userId')
       if (userId) {

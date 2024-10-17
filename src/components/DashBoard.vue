@@ -2,8 +2,16 @@
   <main>
     <h1>Dashboard</h1>
     <div class="border">
-      <h2>WPM: {{ wpmStore.wpm }}</h2>
+      <h2>Username:___</h2>
+      <h2>Total Tests Taken: ___</h2>
+      <h2>Total Time Typing: ___</h2>
       <p>User ID: {{ authStore.userId }}</p>
+    </div>
+    <div class="data">
+      <h2>Test Data</h2>
+      <p>Test 1: ___</p>
+      <p>Test 2: ___</p>
+      <p>Test 3: ___</p>
     </div>
   </main>
 </template>
