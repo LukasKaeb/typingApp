@@ -1,14 +1,30 @@
 <template>
   <main>
-    <h1>Login</h1>
-    <form class="form" @submit.prevent="login(email, password, '/dashboard')">
-      <label for="email">Email</label>
-      <input type="text" name="email" id="email" v-model="email" />
-      <label for="password">Password</label>
-      <input type="text" name="password" id="password" v-model="password" />
-      <button type="submit" class="button">Login</button>
-    </form>
-    <p>Don't have an Account?<router-link to="/register">Register Here.</router-link></p>
+    <div class="login wrap">
+      <div class="h1">Login</div>
+      <input
+        pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+        placeholder="Email"
+        id="email"
+        name="email"
+        type="text"
+        v-model="email"
+      />
+      <input
+        placeholder="Password"
+        id="password"
+        name="password"
+        type="password"
+        v-model="password"
+      />
+      <input
+        value="Login"
+        class="btn"
+        type="submit"
+        @click="login(email, password, '/dashboard')"
+      />
+      <p>Don't have an Account? <router-link to="/register">Register here.</router-link></p>
+    </div>
   </main>
 </template>
   
@@ -31,54 +47,141 @@ const login = (email, password, route) => {
 </script>
   
   <style scoped>
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 30px;
+main {
   display: flex;
   justify-content: center;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  border: 1px #4caf50 solid;
-  padding: 20px;
-  border-radius: 12px;
-  width: 600px;
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 400px;
+  height: 100vh;
 }
 
-label {
-  font-size: 1.5em;
-  margin-bottom: 10px;
+.login {
+  width: 340px;
+  height: 450px;
+  background: #2c2c2c;
+  padding: 47px;
+  padding-bottom: 57px;
+  color: #fff;
+  border-radius: 17px;
+  padding-bottom: 50px;
+  font-size: 1.3em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-input {
-  padding: 10px;
-  margin-bottom: 20px;
-  width: 300px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-input:focus {
-  outline: none;
-  border: 1px solid #000;
-}
-
-.button {
-  padding: 10px;
-  width: 100px;
-  border-radius: 5px;
+.login input[type='text'],
+.login input[type='password'] {
+  opacity: 1;
+  display: block;
   border: none;
-  background-color: #4caf50;
-  cursor: pointer;
+  outline: none;
+  width: 100%;
+  padding: 13px 18px;
+  margin: 20px 0 0 0;
+  font-size: 0.8em;
+  border-radius: 100px;
+  background: #3c3c3c;
+  color: #fff;
 }
 
-button:hover {
-  background-color: #45a049;
+.login input:focus {
+  animation: bounce 1s;
+  -webkit-appearance: none;
+}
+
+.login input[type='submit'],
+.login input[type='button'],
+.h1 {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  padding: 13px;
+  margin: 40px 0 0 0;
+  border-radius: 500px;
+  font-weight: 600;
+  animation: bounce2 1.6s;
+}
+
+.h1 {
+  padding: 0;
+  position: relative;
+  top: -35px;
+  display: block;
+  margin-bottom: -0px;
+  font-size: 1.3em;
+}
+
+.btn {
+  background: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
+  color: #fff;
+  padding: 16px !important;
+}
+
+.btn:hover {
+  background: linear-gradient(144deg, #1e1e1e, 20%, #1e1e1e 50%, #1e1e1e);
+  color: rgb(255, 255, 255);
+  padding: 16px !important;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.login input[type='text'] {
+  animation: bounce 1s;
+  -webkit-appearance: none;
+}
+
+.login input[type='password'] {
+  animation: bounce1 1.3s;
+}
+
+.ui {
+  font-weight: bolder;
+  background: -webkit-linear-gradient(#b563ff, #535efc, #0ec8ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-bottom: 4px solid transparent;
+  border-image: linear-gradient(0.25turn, #535efc, #0ec8ee, #0ec8ee);
+  border-image-slice: 1;
+  display: inline;
+}
+
+@media only screen and (max-width: 600px) {
+  .login {
+    width: 70%;
+    padding: 3em;
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(-250px);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce1 {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce2 {
+  0% {
+    opacity: 0;
+  }
+
+  70% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+p {
+  font-size: 0.9em;
+  margin: 20px 0;
 }
 </style>

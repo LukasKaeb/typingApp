@@ -42,6 +42,7 @@
 
     <!-- Keyboard layout -->
     <div class="keyboard-layout">
+      <!-- result button -->
       <router-link v-if="showResults" class="button" to="/results">Go To Results</router-link>
     </div>
     <transition name="keyboard-slide">
@@ -61,7 +62,6 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
-import { auth, database } from '/firebaseConfig'
 
 const router = useRouter()
 const wpmStore = useWpmStore()
@@ -343,8 +343,8 @@ h1 {
   width: 10%;
   text-align: center;
   border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #4caf50;
+  border: 1px solid #333;
+  /* background: rgb(61, 106, 255); */
 }
 
 p {
@@ -394,17 +394,76 @@ p {
 }
 
 .button {
+  position: relative;
   padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  border: none;
-  border-radius: 12px;
-  background-color: #4caf50;
-  color: black;
+  border-radius: 7px;
+  border: 1px solid #333;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 
 .button:hover {
-  background-color: #45a049;
+  /* background: rgb(61, 106, 255); */
+  box-shadow: 0 0 30px 5px rgba(54, 55, 56, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.button:hover::before {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.button::before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+.button:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
 }
 
 .text {
