@@ -57,7 +57,6 @@ h1 {
   width: 900px;
   height: 200px;
 }
-/* From Uiverse.io by Yaya12085 */
 .stats {
   display: inline-grid;
   background-color: #111111;

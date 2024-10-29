@@ -62,14 +62,45 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const wpmStore = useWpmStore()
+const authStore = useAuthStore()
 const userInput = ref('') // User Input
 
 const timerStarted = ref(false)
 const selectedCountdown = ref(0)
 const showResults = ref(true)
+
+// Needs to be fixed
+const storeResultsEndpoint =
+  'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/store_test_result'
+
+const storeTestResults = async () => {
+  try {
+    const response = await fetch(storeResultsEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        uid: authStore.uid,
+        wpm: wpmStore.netWpm,
+        raw_wpm: wpmStore.rawWpm
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log('Test results stored: ', data)
+    } else {
+      console.log('Error storing test results: ', response.status, response.statusText)
+    }
+  } catch (error) {
+    console.error('Error storing test results: ', error)
+  }
+}
 
 // Fetch text
 const targetText = ref('')
@@ -112,7 +143,7 @@ const compareInput = () => {
 const rawWpm = ref(0)
 const netWpm = ref(0)
 const mistakes = ref(0)
-let newString = ref('')
+// let newString = ref('')
 const totalTime = ref(selectedCountdown.value)
 
 const calculateNetWpm = () => {
@@ -166,8 +197,7 @@ const startCountdown = () => {
         showResults.value = true
         calculateRawWpm()
         calculateNetWpm()
-        // Post results to Firebase
-        // postResults(rawWpm.value, netWpm.value, totalTime.value, 1)
+        storeTestResults()
         router.push('/results')
       }
     }, 1000)
@@ -250,13 +280,11 @@ const handleKeyUp = (event) => {
   }
 
   pressedKeys.value.delete(key)
-  //   console.log(pressedKeys.value)
 }
 
 // Function to check if a key is pressed
 const isKeyPressed = (key) => {
   let normalizedKey = key
-  //console.log(key)
   if (key === 'Space') {
     normalizedKey = ' '
   }
