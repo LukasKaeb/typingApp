@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 
 export const useWpmStore = defineStore('wpm', {
   state: () => ({
-    rawWpm: null,
-    netWpm: null,
+    rawWpm: 0,
+    netWpm: 0,
     totalTimeSpentTyping: 0,
     totalWordsTyped: 0,
     totalTestsTaken: 0

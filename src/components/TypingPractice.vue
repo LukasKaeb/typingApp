@@ -16,28 +16,16 @@
       </select>
     </div>
     <div class="input-container">
-      <input
-        class="key-strokes"
-        type="text"
-        v-model="userInput"
-        @keydown="startCountdown"
-        @blur="pauseCountdown"
-        placeholder="Start typing here..."
-        @input="compareInput"
-      />
+      <input class="key-strokes" type="text" v-model="userInput" @keydown="startCountdown" @blur="pauseCountdown"
+        placeholder="Start typing here..." @input="compareInput" />
       <div class="timer">{{ selectedCountdown }}</div>
       <i @click="resetTimer" class="material-icons">restart_alt</i>
     </div>
     <p>
-      <span
-        v-for="(char, index) in targetText"
-        :key="index"
-        :class="{
-          correct: isTextCorrect[index],
-          incorrect: !isTextCorrect[index] && isTextCorrect[index] !== undefined
-        }"
-        >{{ char }}</span
-      >
+      <span v-for="(char, index) in targetText" :key="index" :class="{
+        correct: isTextCorrect[index],
+        incorrect: !isTextCorrect[index] && isTextCorrect[index] !== undefined
+      }">{{ char }}</span>
     </p>
 
     <!-- Keyboard layout -->
@@ -64,6 +52,7 @@ import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+
 const router = useRouter()
 const wpmStore = useWpmStore()
 const authStore = useAuthStore()
@@ -72,35 +61,6 @@ const userInput = ref('') // User Input
 const timerStarted = ref(false)
 const selectedCountdown = ref(0)
 const showResults = ref(true)
-
-// Needs to be fixed
-const storeResultsEndpoint =
-  'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/store_test_result'
-
-const storeTestResults = async () => {
-  try {
-    const response = await fetch(storeResultsEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        uid: authStore.uid,
-        wpm: wpmStore.netWpm,
-        raw_wpm: wpmStore.rawWpm
-      })
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log('Test results stored: ', data)
-    } else {
-      console.log('Error storing test results: ', response.status, response.statusText)
-    }
-  } catch (error) {
-    console.error('Error storing test results: ', error)
-  }
-}
 
 // Fetch text
 const targetText = ref('')
@@ -184,7 +144,8 @@ const startCountdown = () => {
   if (selectedCountdown.value <= 0) {
     alert('Please select a countdown interval')
   }
-
+  // Add selected countdown to local storage
+  localStorage.setItem('countdown', selectedCountdown.value)
   if (!timerStarted.value) {
     totalTime.value = selectedCountdown.value
 
@@ -197,7 +158,6 @@ const startCountdown = () => {
         showResults.value = true
         calculateRawWpm()
         calculateNetWpm()
-        storeTestResults()
         router.push('/results')
       }
     }, 1000)
@@ -315,22 +275,29 @@ main {
 .keyboard-slide-enter-active,
 .keyboard-slide-leave-active {
   transition: transform 0.4s ease, opacity 0.4s ease;
-  transform-origin: top; /* Ensures the animation grows/shrinks from the top */
+  transform-origin: top;
+  /* Ensures the animation grows/shrinks from the top */
 }
 
 .keyboard-slide-enter {
-  transform: scaleY(0); /* Shrunk state */
-  opacity: 0; /* Hidden state */
+  transform: scaleY(0);
+  /* Shrunk state */
+  opacity: 0;
+  /* Hidden state */
 }
 
 .keyboard-slide-enter-to {
-  transform: scaleY(1); /* Expanded state */
-  opacity: 1; /* Visible state */
+  transform: scaleY(1);
+  /* Expanded state */
+  opacity: 1;
+  /* Visible state */
 }
 
 .keyboard-slide-leave-to {
-  transform: scaleY(0); /* Shrunk state */
-  opacity: 0; /* Hidden state */
+  transform: scaleY(0);
+  /* Shrunk state */
+  opacity: 0;
+  /* Hidden state */
 }
 
 /* Other styles */
@@ -392,7 +359,8 @@ p {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  transition: height 0.4s ease; /* Ensure height animation when needed */
+  transition: height 0.4s ease;
+  /* Ensure height animation when needed */
   margin-top: 20px;
 }
 
@@ -552,10 +520,9 @@ p {
     color: white;
     border-radius: 12px;
   }
+
   .material-icons:hover {
     background-color: #333;
   }
 }
 </style>
-
-
