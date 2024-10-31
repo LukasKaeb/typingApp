@@ -17,13 +17,12 @@ import { useAuthStore } from '@/stores/auth'
 const wpmStore = useWpmStore()
 const authStore = useAuthStore()
 
-const storeResultsEndpoint =
-  'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/store_test_result'
-const uid = localStorage.getItem('uid')
-
+const storeResultsEndpoint = import.meta.env.VITE_API_URL + '/store_test_result'
+const uid = ref(authStore.userId)
+console.log('uid: ', uid)
 const storeTestResults = async () => {
   const data = {
-    uid: uid,
+    uid: uid.value,
     raw_wpm: wpmStore.rawWpm,
     wpm: wpmStore.netWpm
   }
@@ -47,12 +46,12 @@ const storeTestResults = async () => {
   }
 }
 
-const updateTestCountEndpoint =
-  'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/update_test_count'
+const updateTestCountEndpoint = import.meta.env.VITE_API_URL + '/update_test_count'
 
 const updateTestCount = async () => {
+  console.log('uid: ', uid.value)
   const data = {
-    uid: uid,
+    uid: uid.value,
     test_count: 1
   }
 
@@ -75,11 +74,36 @@ const updateTestCount = async () => {
   }
 }
 
-const updateTimeTypingEndpoint = 'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/update_time_typing'
+const updateTimeTypingEndpoint = import.meta.env.VITE_API_URL + '/update_time_typing'
+const updateTimeTyping = async () => {
+  const data = {
+    uid: uid.value,
+    test_time: wpmStore.countdown
+  }
 
+  try {
+    const res = await fetch(updateTimeTypingEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    if (res.ok) {
+      const data = await res.json()
+      console.log('Time typing updated: ', data)
+    } else {
+      console.log('Error updating time typing: ', res.status, res.statusText)
+    }
+  } catch (error) {
+    console.log('Error updating time typing: ', error)
+  }
+}
 onMounted(() => {
+  console.log(uid)
   storeTestResults()
   updateTestCount()
+  updateTimeTyping()
 })
 </script>
 

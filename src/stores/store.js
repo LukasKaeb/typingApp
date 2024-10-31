@@ -7,7 +7,8 @@ export const useWpmStore = defineStore('wpm', {
     netWpm: 0,
     totalTimeSpentTyping: 0,
     totalWordsTyped: 0,
-    totalTestsTaken: 0
+    totalTestsTaken: 0,
+    countdown: 0,
     // username: null,
   }),
   actions: {
@@ -25,6 +26,9 @@ export const useWpmStore = defineStore('wpm', {
     },
     setTotalTestsTaken(value) {
       this.totalTestsTaken = value
+    },
+    setCountdown(value) {
+      this.countdown = value
     }
     // Check if user is logged in
     // setUsername(value) {

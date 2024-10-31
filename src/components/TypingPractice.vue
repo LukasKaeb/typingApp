@@ -5,15 +5,10 @@
     </div>
     <div class="timer-options">
       <p>Choose Interval:</p>
-      <select class="countdown-options" name="countdown" v-model="selectedCountdown" required>
-        <option value="15">15 sec</option>
-        <option value="30">30 sec</option>
-        <option value="60">1 mins</option>
-        <option value="120">2 mins</option>
-        <option value="180">3 mins</option>
-        <option value="240">4 mins</option>
-        <option value="300">5 mins</option>
-      </select>
+      <button class="button" @click="setCountdown(15)">15</button>
+      <button class="button" @click="setCountdown(30)">30</button>
+      <button class="button" @click="setCountdown(60)">60</button>
+      <button class="button" @click="setCountdown(120)">120</button>
     </div>
     <div class="input-container">
       <input class="key-strokes" type="text" v-model="userInput" @keydown="startCountdown" @blur="pauseCountdown"
@@ -61,6 +56,11 @@ const userInput = ref('') // User Input
 const timerStarted = ref(false)
 const selectedCountdown = ref(0)
 const showResults = ref(true)
+
+const setCountdown = (countdown) => {
+  wpmStore.setCountdown(countdown)
+  selectedCountdown.value = countdown
+}
 
 // Fetch text
 const targetText = ref('')

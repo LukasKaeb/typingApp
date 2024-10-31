@@ -4,31 +4,15 @@
       <div class="h1">Login</div>
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-        placeholder="Email"
-        id="email"
-        name="email"
-        type="text"
-        v-model="email"
-      />
-      <input
-        placeholder="Password"
-        id="password"
-        name="password"
-        type="password"
-        v-model="password"
-      />
-      <input
-        value="Login"
-        class="btn"
-        type="submit"
-        @click="login(email, password, '/dashboard')"
-      />
+        placeholder="Email" id="email" name="email" type="text" v-model="email" />
+      <input placeholder="Password" id="password" name="password" type="password" v-model="password" />
+      <input value="Login" class="btn" type="submit" @click="login(email, password, '/dashboard')" />
       <p>Don't have an Account? <router-link to="/register">Register here.</router-link></p>
     </div>
   </main>
 </template>
-  
-  <script setup>
+
+<script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -45,7 +29,7 @@ const login = (email, password, route) => {
   router.push(route)
   addUserToDB()
 }
-const addUserEndpoint = 'http://ec2-13-49-145-140.eu-north-1.compute.amazonaws.com:5001/add_user'
+const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
 
 const addUserToDB = async () => {
   try {
@@ -70,8 +54,8 @@ const addUserToDB = async () => {
   }
 }
 </script>
-  
-  <style scoped>
+
+<style scoped>
 main {
   display: flex;
   justify-content: center;
