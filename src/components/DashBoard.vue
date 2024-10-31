@@ -40,7 +40,22 @@
     </div>
     <div class="backlog">
       <h2>History</h2>
-      <p>Coming soon...</p>
+      <ul>
+        <!-- create a list element for each test -->
+        <li v-for="(test, index) in allTests.slice(0, visibleCount)" :key="index">
+          <p>WPM: {{ test.wpm }}</p>
+          <p>Raw WPM: {{ test.raw_wpm }}</p>
+        </li>
+      </ul>
+      <div class="button-container">
+        <p v-if="allTests.length === 0">No tests taken yet.</p>
+        <button class="button" v-if="visibleCount < allTests.length" @click="showMore">
+          Show more
+        </button>
+        <button class="button" v-if="visibleCount > allTests.length" @click="showLess">
+          Show less
+        </button>
+      </div>
     </div>
   </main>
 </template>
@@ -60,7 +75,18 @@ const averageRawWpm = ref(0)
 const highestWpm = ref(0)
 const highestRawWpm = ref(0)
 
+const allTests = ref([])
+const visibleCount = ref(5)
+
 const uid = authStore.userId
+
+const showMore = () => {
+  visibleCount.value += 5
+}
+
+const showLess = () => {
+  visibleCount.value -= 5
+}
 
 const fetchUserStats = async () => {
   try {
@@ -98,6 +124,7 @@ const fetchUserTypingStats = async () => {
       averageRawWpm.value = Math.round(
         data.tests.reduce((acc, test) => acc + test.raw_wpm, 0) / data.tests.length
       )
+      allTests.value = data.tests
     }
   } catch (error) {
     console.error('Fetch error:', error)
@@ -181,19 +208,109 @@ h1 {
   color: rgb(197, 194, 194);
 }
 .backlog {
-  /* style it  */
   margin-top: 20px;
   padding: 20px;
   width: 900px;
   height: 200px;
 }
 .average-stats {
-  /* style the stats */
   margin-top: 20px;
   padding: 20px;
   border: 2.5px solid #ccc;
   border-radius: 12px;
   width: 900px;
   height: 130px;
+}
+li {
+  list-style-type: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 7px;
+  border: 1px solid #333;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.button:hover {
+  /* background: rgb(61, 106, 255); */
+  box-shadow: 0 0 30px 5px rgba(54, 55, 56, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.button:hover::before {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.button::before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+.button:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 </style>

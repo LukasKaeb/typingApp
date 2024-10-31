@@ -401,6 +401,7 @@ p {
 }
 
 .button {
+  cursor: pointer;
   position: relative;
   padding: 10px 20px;
   border-radius: 7px;
