@@ -52,7 +52,11 @@
         <button class="button" v-if="visibleCount < allTests.length" @click="showMore">
           Show more
         </button>
-        <button class="button" v-if="visibleCount > allTests.length" @click="showLess">
+        <button
+          class="button"
+          v-if="visibleCount > allTests.length && allTests.length !== 0"
+          @click="showLess"
+        >
           Show less
         </button>
       </div>

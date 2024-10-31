@@ -1,16 +1,17 @@
 <template>
   <main>
     <div>
-      <h1>See result below brother :D</h1>
+      <h1>Typing Test Results</h1>
       <p>Your Raw WPM: {{ wpmStore.rawWpm }}</p>
       <p>Your Net WPM: {{ wpmStore.netWpm }}</p>
     </div>
     <router-link to="/practice">Go back</router-link>
+    <router-link to="/dashboard">Dashboard</router-link>
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useAuthStore } from '@/stores/auth'
 
@@ -103,6 +104,7 @@ const updateTestCount = async () => {
 }
 console.log('countdown: ', wpmStore.countdown)
 const updateTimeTypingEndpoint = import.meta.env.VITE_API_URL + '/update_time_typing'
+
 const updateTimeTyping = async () => {
   const data = {
     uid: uid.value,
@@ -127,11 +129,14 @@ const updateTimeTyping = async () => {
     console.log('Error updating time typing: ', error)
   }
 }
+onBeforeMount(() => {
+  addUser()
+})
+
 onMounted(() => {
   storeTestResults()
   updateTestCount()
   updateTimeTyping()
-  addUser()
 })
 </script>
 
