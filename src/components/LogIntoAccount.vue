@@ -27,31 +27,6 @@ const login = (email, password, route) => {
   console.log(email, password)
   authStore.loginUser(email, password)
   router.push(route)
-  addUserToDB()
-}
-const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
-
-const addUserToDB = async () => {
-  try {
-    const response = await fetch(addUserEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        uid: authStore.userId
-      })
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log('User added to DB', data)
-    } else {
-      console.log('Error adding user to DB', response.status, response.statusText)
-    }
-  } catch (error) {
-    console.error('Fetch error:', error)
-  }
 }
 </script>
 

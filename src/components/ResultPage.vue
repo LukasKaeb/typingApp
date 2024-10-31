@@ -17,9 +17,37 @@ import { useAuthStore } from '@/stores/auth'
 const wpmStore = useWpmStore()
 const authStore = useAuthStore()
 
-const storeResultsEndpoint = import.meta.env.VITE_API_URL + '/store_test_result'
 const uid = ref(authStore.userId)
 console.log('uid: ', uid)
+
+const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
+
+const addUser = async () => {
+  console.log('Adding user to DB', uid.value)
+  try {
+    const response = await fetch(addUserEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        uid: uid.value
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log('User added to DB', data)
+    } else {
+      console.log('Error adding user to DB', response.status, response.statusText)
+    }
+  } catch (error) {
+    console.error('Fetch error:', error)
+  }
+}
+
+const storeResultsEndpoint = import.meta.env.VITE_API_URL + '/store_test_result'
+
 const storeTestResults = async () => {
   const data = {
     uid: uid.value,
@@ -73,7 +101,7 @@ const updateTestCount = async () => {
     console.log('Error updating test count: ', error)
   }
 }
-
+console.log('countdown: ', wpmStore.countdown)
 const updateTimeTypingEndpoint = import.meta.env.VITE_API_URL + '/update_time_typing'
 const updateTimeTyping = async () => {
   const data = {
@@ -100,10 +128,10 @@ const updateTimeTyping = async () => {
   }
 }
 onMounted(() => {
-  console.log(uid)
   storeTestResults()
   updateTestCount()
   updateTimeTyping()
+  addUser()
 })
 </script>
 

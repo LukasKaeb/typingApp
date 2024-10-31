@@ -11,16 +11,28 @@
       <button class="button" @click="setCountdown(120)">120</button>
     </div>
     <div class="input-container">
-      <input class="key-strokes" type="text" v-model="userInput" @keydown="startCountdown" @blur="pauseCountdown"
-        placeholder="Start typing here..." @input="compareInput" />
+      <input
+        class="key-strokes"
+        type="text"
+        v-model="userInput"
+        @keydown="startCountdown"
+        @blur="pauseCountdown"
+        placeholder="Start typing here..."
+        @input="compareInput"
+      />
       <div class="timer">{{ selectedCountdown }}</div>
       <i @click="resetTimer" class="material-icons">restart_alt</i>
     </div>
     <p>
-      <span v-for="(char, index) in targetText" :key="index" :class="{
-        correct: isTextCorrect[index],
-        incorrect: !isTextCorrect[index] && isTextCorrect[index] !== undefined
-      }">{{ char }}</span>
+      <span
+        v-for="(char, index) in targetText"
+        :key="index"
+        :class="{
+          correct: isTextCorrect[index],
+          incorrect: !isTextCorrect[index] && isTextCorrect[index] !== undefined
+        }"
+        >{{ char }}</span
+      >
     </p>
 
     <!-- Keyboard layout -->
@@ -45,16 +57,13 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-
 
 const router = useRouter()
 const wpmStore = useWpmStore()
-const authStore = useAuthStore()
 const userInput = ref('') // User Input
 
 const timerStarted = ref(false)
-const selectedCountdown = ref(0)
+const selectedCountdown = ref(wpmStore.countdown)
 const showResults = ref(true)
 
 const setCountdown = (countdown) => {
@@ -256,7 +265,7 @@ onMounted(() => {
   fetchText()
   window.addEventListener('keydown', handleKeyDown)
   window.addEventListener('keyup', handleKeyUp)
-  selectedCountdown.value = 15
+  wpmStore.setCountdown(15)
 })
 
 // Cleanup event listeners when component unmounts
@@ -274,7 +283,9 @@ main {
 /* Define animation for the keyboard */
 .keyboard-slide-enter-active,
 .keyboard-slide-leave-active {
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease;
   transform-origin: top;
   /* Ensures the animation grows/shrinks from the top */
 }
