@@ -43,12 +43,47 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { ref, onMounted } from 'vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const startPracticing = () => {
   router.push('/practice')
 }
+
+const uid = ref(authStore.userId)
+
+const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
+
+const addUser = async () => {
+  console.log('Adding user to DB', uid.value)
+  try {
+    const response = await fetch(addUserEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        uid: uid.value
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log('User added to DB', data)
+    } else {
+      console.log('Error adding user to DB', response.status, response.statusText)
+    }
+  } catch (error) {
+    console.error('Fetch error:', error)
+  }
+}
+
+onMounted(() => {
+  addUser()
+})
 </script>
 
 <style scoped>
@@ -110,7 +145,9 @@ main p {
   background-color: var(--black-700);
 
   border-radius: var(--border_radius);
-  box-shadow: inset 0 0.5px hsl(0, 0%, 100%), inset 0 -1px 2px 0 hsl(0, 0%, 0%),
+  box-shadow:
+    inset 0 0.5px hsl(0, 0%, 100%),
+    inset 0 -1px 2px 0 hsl(0, 0%, 0%),
     0px 4px 10px -4px hsla(0 0% 0% / calc(1 - var(--active, 0))),
     0 0 0 calc(var(--active, 0) * 0.375rem) hsl(260 97% 50% / 0.75);
 

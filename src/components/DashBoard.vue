@@ -2,7 +2,14 @@
   <main>
     <h1>Dashboard</h1>
     <div class="border">
-      <h2>Username:___</h2>
+      <input
+        v-if="username === ''"
+        type="text"
+        placeholder="Enter a username"
+        @keyup.enter="setUsername($event.target.value)"
+      />
+      <h2>{{ username }}</h2>
+      <i v-if="username" class="material-icons">edit</i>
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-title">Total Tests Taken</div>
@@ -66,7 +73,7 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 
 const authStore = useAuthStore()
 
@@ -81,6 +88,13 @@ const highestRawWpm = ref(0)
 
 const allTests = ref([])
 const visibleCount = ref(5)
+
+// Set a username
+const username = localStorage.getItem('username') || ''
+
+const setUsername = (name) => {
+  // ...
+}
 
 const uid = authStore.userId
 
@@ -316,5 +330,21 @@ li {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+.material-icons {
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+}
+input {
+  /* make it pretty */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  width: 100%;
+  font-size: 1.2rem;
+  color: #333;
+  background-color: #f9f9f9;
 }
 </style>

@@ -21,7 +21,7 @@
         value="Register"
         class="btn"
         type="submit"
-        @click="createAccount(email, password, '/dashboard')"
+        @click="createAccount(email, password, '/')"
       />
       <p>Already have an Account? <router-link to="/login">Login here.</router-link></p>
     </div>

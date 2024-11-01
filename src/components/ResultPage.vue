@@ -21,32 +21,6 @@ const authStore = useAuthStore()
 const uid = ref(authStore.userId)
 console.log('uid: ', uid)
 
-const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
-
-const addUser = async () => {
-  console.log('Adding user to DB', uid.value)
-  try {
-    const response = await fetch(addUserEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        uid: uid.value
-      })
-    })
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log('User added to DB', data)
-    } else {
-      console.log('Error adding user to DB', response.status, response.statusText)
-    }
-  } catch (error) {
-    console.error('Fetch error:', error)
-  }
-}
-
 const storeResultsEndpoint = import.meta.env.VITE_API_URL + '/store_test_result'
 
 const storeTestResults = async () => {
@@ -129,9 +103,6 @@ const updateTimeTyping = async () => {
     console.log('Error updating time typing: ', error)
   }
 }
-onBeforeMount(() => {
-  addUser()
-})
 
 onMounted(() => {
   storeTestResults()

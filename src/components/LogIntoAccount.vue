@@ -4,9 +4,20 @@
       <div class="h1">Login</div>
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-        placeholder="Email" id="email" name="email" type="text" v-model="email" />
-      <input placeholder="Password" id="password" name="password" type="password" v-model="password" />
-      <input value="Login" class="btn" type="submit" @click="login(email, password, '/dashboard')" />
+        placeholder="Email"
+        id="email"
+        name="email"
+        type="text"
+        v-model="email"
+      />
+      <input
+        placeholder="Password"
+        id="password"
+        name="password"
+        type="password"
+        v-model="password"
+      />
+      <input value="Login" class="btn" type="submit" @click="login(email, password, '/')" />
       <p>Don't have an Account? <router-link to="/register">Register here.</router-link></p>
     </div>
   </main>
