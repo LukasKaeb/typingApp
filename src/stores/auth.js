@@ -8,6 +8,10 @@ export const useAuthStore = defineStore('auth', {
     username: ''
   }),
   actions: {
+    setUsername(username) {
+      this.username = username
+    },
+
     async createAccount(email, password) {
       const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
       let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + apiKey

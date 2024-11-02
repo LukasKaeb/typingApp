@@ -2,14 +2,13 @@
   <main>
     <h1>Dashboard</h1>
     <div class="border">
-      <input
-        v-if="username === ''"
-        type="text"
-        placeholder="Enter a username"
-        @keyup.enter="setUsername($event.target.value)"
-      />
-      <h2>{{ username }}</h2>
-      <i v-if="username" class="material-icons">edit</i>
+      <div class="profile">
+        <input v-if="username === ''" type="text" placeholder="Enter a username"
+          @keyup.enter="setUsername($event.target.value)" />
+        <h2>{{ username }}</h2>
+        <input v-if="isUsernameInputVisible" type="text" @keyup.enter="setUsername" v-model="newUsername" />
+        <i v-if="username" class="material-icons" @click="toggleInputVisibility">edit</i>
+      </div>
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-title">Total Tests Taken</div>
@@ -38,7 +37,6 @@
           <!-- <div class="stat-desc">21% more than last month</div> -->
         </div>
       </div>
-      <p>User ID: {{ authStore.userId }}</p>
     </div>
     <div class="average-stats">
       <h2>Typing Speed</h2>
@@ -59,11 +57,7 @@
         <button class="button" v-if="visibleCount < allTests.length" @click="showMore">
           Show more
         </button>
-        <button
-          class="button"
-          v-if="visibleCount > allTests.length && allTests.length !== 0"
-          @click="showLess"
-        >
+        <button class="button" v-if="visibleCount > allTests.length && allTests.length !== 0" @click="showLess">
           Show less
         </button>
       </div>
@@ -73,7 +67,7 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const authStore = useAuthStore()
 
@@ -90,13 +84,10 @@ const allTests = ref([])
 const visibleCount = ref(5)
 
 // Set a username
-const username = localStorage.getItem('username') || ''
+const username = ref('')
+const newUsername = ref('')
 
-const setUsername = (name) => {
-  // ...
-}
-
-const uid = authStore.userId
+const uid = ref(authStore.userId || localStorage.getItem('userId'))
 
 const showMore = () => {
   visibleCount.value += 5
@@ -106,10 +97,60 @@ const showLess = () => {
   visibleCount.value -= 5
 }
 
+const isUsernameInputVisible = ref(false)
+
+const toggleInputVisibility = () => {
+  isUsernameInputVisible.value = !isUsernameInputVisible.value
+}
+
+const setUsernameEndpoint = import.meta.env.VITE_API_URL + '/set_username'
+
+const setUsername = async () => {
+  try {
+    const response = await fetch(setUsernameEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        uid: uid.value,
+        username: newUsername.value
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log('Username set in DB', data)
+    } else {
+      console.log('Error setting username in DB', response.status, response.statusText)
+    }
+  } catch (error) {
+    console.error('Fetch error:', error)
+  }
+  toggleInputVisibility()
+  getUsername()
+}
+
+const getUsername = async () => {
+  try {
+    const endpoint = `${import.meta.env.VITE_API_URL}/get_username/${uid.value}`
+    const response = await fetch(endpoint)
+    const data = await response.json()
+
+    if (response.ok) {
+      username.value = data.username
+    } else {
+      console.error('Error fetching username:', data)
+    }
+  } catch (error) {
+    console.error('Fetch error:', error)
+  }
+}
+
 const fetchUserStats = async () => {
   try {
     console.log('Fetching user stats', uid)
-    const endpoint = `${import.meta.env.VITE_API_URL}/get_user_stats/${uid}`
+    const endpoint = `${import.meta.env.VITE_API_URL}/get_user_stats/${uid.value}`
     const response = await fetch(endpoint)
     const data = await response.json()
 
@@ -126,7 +167,7 @@ const fetchUserStats = async () => {
 
 const fetchUserTypingStats = async () => {
   try {
-    const endpoint = `${import.meta.env.VITE_API_URL}/get_typing_stats/${uid}`
+    const endpoint = `${import.meta.env.VITE_API_URL}/get_typing_stats/${uid.value}`
     const response = await fetch(endpoint)
     const data = await response.json()
 
@@ -150,6 +191,7 @@ const fetchUserTypingStats = async () => {
 }
 
 onMounted(() => {
+  getUsername()
   fetchUserStats()
   fetchUserTypingStats()
 })
@@ -225,12 +267,14 @@ h1 {
   line-height: 1rem;
   color: rgb(197, 194, 194);
 }
+
 .backlog {
   margin-top: 20px;
   padding: 20px;
   width: 900px;
   height: 200px;
 }
+
 .average-stats {
   margin-top: 20px;
   padding: 20px;
@@ -239,6 +283,7 @@ h1 {
   width: 900px;
   height: 130px;
 }
+
 li {
   list-style-type: none;
   padding: 10px;
@@ -331,11 +376,13 @@ li {
   justify-content: center;
   margin-top: 20px;
 }
+
 .material-icons {
   font-size: 1.2rem;
   color: #fff;
   cursor: pointer;
 }
+
 input {
   /* make it pretty */
   border: 1px solid #ccc;
@@ -346,5 +393,14 @@ input {
   font-size: 1.2rem;
   color: #333;
   background-color: #f9f9f9;
+}
+
+.profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  margin: 5px;
+  width: 100%;
 }
 </style>

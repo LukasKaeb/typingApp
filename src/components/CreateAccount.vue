@@ -2,6 +2,7 @@
   <main>
     <div class="login wrap">
       <div class="h1">Register</div>
+      <input placeholder="Username" id="username" name="username" type="text" v-model="username" />
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
         placeholder="Email"
@@ -38,6 +39,7 @@ const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
+const username = ref('')
 
 const createAccount = (email, password, route) => {
   console.log(email, password)
@@ -47,6 +49,7 @@ const createAccount = (email, password, route) => {
     return
   }
   authStore.createAccount(email, password)
+  authStore.setUsername(username)
   router.push(route)
 }
 </script>
@@ -60,7 +63,7 @@ main {
 }
 .login {
   width: 340px;
-  height: 450px;
+  height: 525px;
   background: #2c2c2c;
   padding: 47px;
   padding-bottom: 57px;
