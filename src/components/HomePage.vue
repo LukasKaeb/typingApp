@@ -51,14 +51,15 @@ const authStore = useAuthStore()
 
 const startPracticing = () => {
   router.push('/practice')
+  console.log(authStore.userId)
 }
 
-const uid = ref(authStore.userId)
+const uid = ref(authStore.userId || localStorage.getItem('userId'))
 
 const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
 
 const addUser = async () => {
-  console.log('Adding user to DB', uid.value)
+  console.log('Adding user to DB', uid)
   try {
     const response = await fetch(addUserEndpoint, {
       method: 'POST',
@@ -82,7 +83,17 @@ const addUser = async () => {
 }
 
 onMounted(() => {
-  addUser()
+  if (uid.value) {
+    addUser()
+  } else {
+    const interval = setInterval(() => {
+      uid.value = localStorage.getItem('userId')
+      if (uid.value) {
+        clearInterval(interval)
+        addUser()
+      }
+    }, 100)
+  }
 })
 </script>
 

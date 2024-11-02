@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    userId: null,
+    userId: '',
     userToken: null,
     isLoggedIn: false,
-    username: null
+    username: ''
   }),
   actions: {
     async createAccount(email, password) {
@@ -80,7 +80,7 @@ export const useAuthStore = defineStore('auth', {
       } else {
         alert(responseData.error.message)
       }
-    }, 
+    },
     checkAuth() {
       const userId = localStorage.getItem('userId')
       if (userId) {
