@@ -1,14 +1,29 @@
 <template>
   <main>
     <h1>Dashboard</h1>
-    <div class="border">
+    <div>
       <div class="profile">
-        <input v-if="username === ''" type="text" placeholder="Enter a username"
-          @keyup.enter="setUsername($event.target.value)" />
+        <input
+          v-if="username === ''"
+          type="text"
+          placeholder="Enter a username"
+          @keyup.enter="setUsername($event.target.value)"
+        />
         <h2>{{ username }}</h2>
-        <input v-if="isUsernameInputVisible" type="text" @keyup.enter="setUsername" v-model="newUsername" />
+        <input
+          v-if="isUsernameInputVisible"
+          type="text"
+          @keyup.enter="setUsername"
+          v-model="newUsername"
+        />
         <i v-if="username" class="material-icons" @click="toggleInputVisibility">edit</i>
       </div>
+      <div>
+        <img class="profile-pic" :src="profilePic" alt="there is an image here" />
+        <!-- <p @click="editProfilePic" class="edit-pic">Edit Profile</p> -->
+        <input type="file" @change="changeProfilePic" alt="Profile Picture" class="file-upload" />
+      </div>
+      <div></div>
       <div class="stats shadow">
         <div class="stat">
           <div class="stat-title">Total Tests Taken</div>
@@ -57,7 +72,11 @@
         <button class="button" v-if="visibleCount < allTests.length" @click="showMore">
           Show more
         </button>
-        <button class="button" v-if="visibleCount > allTests.length && allTests.length !== 0" @click="showLess">
+        <button
+          class="button"
+          v-if="visibleCount > allTests.length && allTests.length !== 0"
+          @click="showLess"
+        >
           Show less
         </button>
       </div>
@@ -87,6 +106,8 @@ const visibleCount = ref(5)
 const username = ref('')
 const newUsername = ref('')
 
+const profilePic = ref('')
+
 const uid = ref(authStore.userId || localStorage.getItem('userId'))
 
 const showMore = () => {
@@ -101,6 +122,42 @@ const isUsernameInputVisible = ref(false)
 
 const toggleInputVisibility = () => {
   isUsernameInputVisible.value = !isUsernameInputVisible.value
+}
+
+const changeProfilePic = async (event) => {
+  try {
+    const file = event.target.files[0]
+    const endpoint = import.meta.env.VITE_API_URL + '/set_profilepic'
+
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const base64image = e.target.result
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uid: uid.value,
+            image: base64image
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          console.log('Success! ', data)
+        } else {
+          console.log('Something went wrong!')
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  } catch (error) {
+    console.log('Fetch error: ', error)
+    alert('Error setting profile picture')
+  }
 }
 
 const setUsernameEndpoint = import.meta.env.VITE_API_URL + '/set_username'
@@ -120,15 +177,33 @@ const setUsername = async () => {
 
     if (response.ok) {
       const data = await response.json()
-      console.log('Username set in DB', data)
+      // console.log('Username set in DB', data)
     } else {
-      console.log('Error setting username in DB', response.status, response.statusText)
+      // console.log('Error setting username in DB', response.status, response.statusText)
+      alert('Error setting username')
     }
   } catch (error) {
     console.error('Fetch error:', error)
+    alert('Error setting username')
   }
   toggleInputVisibility()
   getUsername()
+}
+
+const getProfilePic = async () => {
+  try {
+    const endpoint = `${import.meta.env.VITE_API_URL}/get_profilepic/${uid.value}`
+    const response = await fetch(endpoint)
+    const data = await response.json()
+
+    if (response.ok) {
+      profilePic.value = data.profile_picture
+    } else {
+      console.log('Error fetching profile picture: ', data)
+    }
+  } catch (error) {
+    console.log('Fetch error: ', error)
+  }
 }
 
 const getUsername = async () => {
@@ -192,6 +267,7 @@ const fetchUserTypingStats = async () => {
 
 onMounted(() => {
   getUsername()
+  getProfilePic()
   fetchUserStats()
   fetchUserTypingStats()
 })
@@ -402,5 +478,31 @@ input {
   padding: 5px;
   margin: 5px;
   width: 100%;
+}
+
+.profile-pic {
+  /* style this */
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.edit-pic {
+  /* style this */
+  width: 100px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.file-upload {
+  background-color: transparent;
+  width: 50%;
+  height: 50px;
+  border: none;
+  padding: 5px;
+  margin: 5px;
+  cursor: pointer;
+  display: flex;
 }
 </style>

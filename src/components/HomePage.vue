@@ -36,7 +36,6 @@ const authStore = useAuthStore()
 
 const startPracticing = () => {
   router.push('/practice')
-  console.log(authStore.userId)
 }
 
 const uid = ref(authStore.userId || localStorage.getItem('userId'))
@@ -44,7 +43,6 @@ const uid = ref(authStore.userId || localStorage.getItem('userId'))
 const addUserEndpoint = import.meta.env.VITE_API_URL + '/add_user'
 
 const addUser = async () => {
-  console.log('Adding user to DB', uid)
   try {
     const response = await fetch(addUserEndpoint, {
       method: 'POST',
@@ -58,12 +56,13 @@ const addUser = async () => {
 
     if (response.ok) {
       const data = await response.json()
-      console.log('User added to DB', data)
+      // console.log('User added to DB', data)
     } else {
       console.log('Error adding user to DB', response.status, response.statusText)
     }
   } catch (error) {
-    console.error('Fetch error:', error)
+    alert('Error adding user to DB')
+    // console.error('Fetch error:', error)
   }
 }
 const username = authStore.username
@@ -84,12 +83,13 @@ const setUsername = async (userId) => {
 
     if (response.ok) {
       const data = await response.json()
-      console.log('Username set in DB', data)
+      // console.log('Username set in DB', data)
     } else {
-      console.log('Error setting username in DB', response.status, response.statusText)
+      // console.log('Error setting username in DB', response.status, response.statusText)
     }
   } catch (error) {
-    console.error('Fetch error:', error)
+    // console.error('Fetch error:', error)
+    alert('Error setting username in DB')
   }
 }
 

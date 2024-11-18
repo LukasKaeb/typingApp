@@ -5,25 +5,9 @@
       <input placeholder="Username" id="username" name="username" type="text" v-model="username" />
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-        placeholder="Email"
-        id="email"
-        name="email"
-        type="text"
-        v-model="email"
-      />
-      <input
-        placeholder="Password"
-        id="password"
-        name="password"
-        type="password"
-        v-model="password"
-      />
-      <input
-        value="Register"
-        class="btn"
-        type="submit"
-        @click="createAccount(email, password, '/')"
-      />
+        placeholder="Email" id="email" name="email" type="text" v-model="email" />
+      <input placeholder="Password" id="password" name="password" type="password" v-model="password" />
+      <input value="Register" class="btn" type="submit" @click="createAccount(email, password, '/')" />
       <p>Already have an Account? <router-link to="/login">Login here.</router-link></p>
     </div>
   </main>
@@ -42,12 +26,19 @@ const password = ref('')
 const username = ref('')
 
 const createAccount = (email, password, route) => {
-  console.log(email, password)
+  // console.log(email, password)
   if (password.length < 8) {
     alert('Password must be at least 8 characters long')
     password.value = ''
     return
   }
+
+  if (!email.includes('@')) {
+    alert('Invalid email')
+    email.value = ''
+    return
+  }
+
   authStore.createAccount(email, password)
   authStore.setUsername(username)
   router.push(route)
@@ -61,6 +52,7 @@ main {
   align-items: center;
   height: 100vh;
 }
+
 .login {
   width: 340px;
   height: 525px;
@@ -186,6 +178,7 @@ main {
     opacity: 0;
   }
 }
+
 p {
   font-size: 0.9em;
   margin: 20px 0;

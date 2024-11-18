@@ -4,21 +4,11 @@
       <div class="h1">Login</div>
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-        placeholder="Email"
-        id="email"
-        name="email"
-        type="text"
-        v-model="email"
-      />
-      <input
-        placeholder="Password"
-        id="password"
-        name="password"
-        type="password"
-        v-model="password"
-      />
+        placeholder="Email" id="email" name="email" type="text" v-model="email" />
+      <input placeholder="Password" id="password" name="password" type="password" v-model="password" />
       <input value="Login" class="btn" type="submit" @click="login(email, password, '/')" />
       <p>Don't have an Account? <router-link to="/register">Register here.</router-link></p>
+      <p v-if="error.value !== ''">{{ error }}</p>
     </div>
   </main>
 </template>
@@ -34,10 +24,23 @@ const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 
+const error = ref('')
+
 const login = (email, password, route) => {
-  console.log(email, password)
-  authStore.loginUser(email, password)
-  router.push(route)
+  try {
+    if (!email.includes('@')) {
+      alert('Invalid email')
+      email.value = ''
+      return
+    }
+    console.log(email, password)
+    authStore.loginUser(email, password)
+    router.push(route)
+
+  } catch (error) {
+    console.error('Fetch error:', error)
+    error.value = error.message || 'Invalid email or password'
+  }
 }
 </script>
 

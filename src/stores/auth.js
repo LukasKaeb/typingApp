@@ -47,6 +47,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async loginUser(email, password) {
+      try {
       if (this.isLoggedIn) {
         alert('You are already logged in!')
       }
@@ -66,6 +67,11 @@ export const useAuthStore = defineStore('auth', {
 
       const responseData = await response.json()
 
+      if (!response.ok) {
+          const error = new Error(responseData.message || 'Failed to authenticate. Check your login data.')
+          throw error
+      }
+
       if (responseData.idToken) {
         // Save token and user id to local storage for persistence
         console.log('Logged in!', responseData.idToken)
@@ -84,21 +90,23 @@ export const useAuthStore = defineStore('auth', {
       } else {
         alert(responseData.error.message)
       }
+      } catch (error) {
+        if (error.message === 'INVALID_LOGIN_CREDENTIALS') {
+          alert('Invalid login credentials')
+        } else {
+          alert('An error occurred')
+        }
+      }
     },
     checkAuth() {
       const userId = localStorage.getItem('userId')
       if (userId) {
         console.log('User is logged in')
-        //   this.setIsLoggedIn(true)
         this.isLoggedIn = true
-        //   this.setUserId(userId)
         this.userId = userId
-        // fetch data from backend...
       } else {
         console.log('User is not logged in')
-        // this.setIsLoggedIn(false)
         this.isLoggedIn = false
-        // this.setUserId(null)
         this.userId = null
       }
     },

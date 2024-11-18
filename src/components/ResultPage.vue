@@ -6,12 +6,12 @@
       <p>Your Net WPM: {{ wpmStore.netWpm }}</p>
     </div>
     <router-link to="/practice">Go back</router-link>
-    <router-link to="/dashboard">Dashboard</router-link>
+    <router-link v-if="uid" to="/dashboard">Dashboard</router-link>
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useWpmStore } from '@/stores/store'
 import { useAuthStore } from '@/stores/auth'
 
