@@ -18,11 +18,20 @@
         />
         <i v-if="username" class="material-icons" @click="toggleInputVisibility">edit</i>
       </div>
-      <div>
-        <img class="profile-pic" :src="profilePic" alt="there is an image here" />
-        <!-- <p @click="editProfilePic" class="edit-pic">Edit Profile</p> -->
-        <input type="file" @change="changeProfilePic" alt="Profile Picture" class="file-upload" />
+
+      <div class="file-input-wrapper">
+        <!-- TODO: alt attribute should look better. Default profile icon? -->
+        <img class="profile-pic" :src="profilePic" alt="No Picture" />
+        <button class="custom-button">Change Profile</button>
+        <input
+          v-if="!isInputHidden"
+          type="file"
+          @change="changeProfilePic"
+          alt="Profile Picture"
+          class="file-input"
+        />
       </div>
+
       <div></div>
       <div class="stats shadow">
         <div class="stat">
@@ -147,6 +156,7 @@ const changeProfilePic = async (event) => {
 
         if (response.ok) {
           const data = await response.json()
+          location.reload()
           console.log('Success! ', data)
         } else {
           console.log('Something went wrong!')
@@ -177,9 +187,8 @@ const setUsername = async () => {
 
     if (response.ok) {
       const data = await response.json()
-      // console.log('Username set in DB', data)
+      console.log('Username set in DB', data)
     } else {
-      // console.log('Error setting username in DB', response.status, response.statusText)
       alert('Error setting username')
     }
   } catch (error) {
@@ -486,6 +495,7 @@ input {
   height: 100px;
   border-radius: 50%;
   margin-right: 10px;
+  display: flex;
 }
 
 .edit-pic {
@@ -504,5 +514,36 @@ input {
   margin: 5px;
   cursor: pointer;
   display: flex;
+}
+.change-profile {
+  padding-bottom: 1rem;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+}
+
+.custom-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 </style>
