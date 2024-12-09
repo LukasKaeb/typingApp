@@ -17,7 +17,12 @@
         type="password"
         v-model="password"
       />
-      <input value="Login" class="btn" type="submit" @click="login(email, password, '/')" />
+      <input
+        value="Login"
+        class="btn"
+        type="submit"
+        @click="login(email, password, '/dashboard')"
+      />
       <p>Don't have an Account? <router-link to="/register">Register here.</router-link></p>
       <p v-if="error.value !== ''">{{ error }}</p>
     </div>

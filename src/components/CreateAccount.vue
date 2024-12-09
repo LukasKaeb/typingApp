@@ -5,9 +5,25 @@
       <input placeholder="Username" id="username" name="username" type="text" v-model="username" />
       <input
         pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-        placeholder="Email" id="email" name="email" type="text" v-model="email" />
-      <input placeholder="Password" id="password" name="password" type="password" v-model="password" />
-      <input value="Register" class="btn" type="submit" @click="createAccount(email, password, '/')" />
+        placeholder="Email"
+        id="email"
+        name="email"
+        type="text"
+        v-model="email"
+      />
+      <input
+        placeholder="Password"
+        id="password"
+        name="password"
+        type="password"
+        v-model="password"
+      />
+      <input
+        value="Register"
+        class="btn"
+        type="submit"
+        @click="createAccount(email, password, '/dashboard')"
+      />
       <p>Already have an Account? <router-link to="/login">Login here.</router-link></p>
     </div>
   </main>
