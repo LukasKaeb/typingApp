@@ -5,7 +5,6 @@
 
 <script setup>
 import NavBar from '@/components/NavBar.vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import { onMounted } from 'vue'
 

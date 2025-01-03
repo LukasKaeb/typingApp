@@ -4,7 +4,7 @@
     <div>
       <div class="profile">
         <input
-          v-if="username === ''"
+          v-if="!username"
           type="text"
           placeholder="Enter a username"
           @keyup.enter="setUsername($event.target.value)"
@@ -112,7 +112,7 @@ const allTests = ref([])
 const visibleCount = ref(5)
 
 // Set a username
-const username = ref('')
+const username = ref(authStore.userId || localStorage.getItem('userId'))
 const newUsername = ref('')
 
 const profilePic = ref('')
@@ -315,9 +315,7 @@ h1 {
 }
 
 .shadow {
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 
 .stat {
